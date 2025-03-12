@@ -1,0 +1,3 @@
+C:/Users/selim/Documents/University/Project/C/My Own Shell/Code/command-line-shell/cmake-build-debug/CMakeFiles/command_line_shell.dir
+C:/Users/selim/Documents/University/Project/C/My Own Shell/Code/command-line-shell/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/selim/Documents/University/Project/C/My Own Shell/Code/command-line-shell/cmake-build-debug/CMakeFiles/rebuild_cache.dir
