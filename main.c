@@ -4,133 +4,121 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-// Function to check if a file exists and is executable
+/* Check if we can run this file like a proper program */
 int is_executable(const char *path) {
-    return access(path, X_OK) == 0; // `access` checks if the file at `path` is executable
+    return access(path, X_OK) == 0;
 }
 
-// Function to search for a command in the PATH
+/* Hunt through system folders to find where a command lives */
 char *find_in_path(const char *command) {
-    char *path_env = getenv("PATH"); // Get the PATH environment variable
-    if (path_env == NULL) {
-        return NULL; // If PATH is not set, return NULL
-    }
+    char *path_env = getenv("PATH");
+    if (!path_env) return NULL;
 
-    char *path_copy = strdup(path_env); // Create a modifiable copy of PATH
-    if (path_copy == NULL) {
-        return NULL; // Return NULL if memory allocation fails
-    }
+    char *path_copy = strdup(path_env);
+    if (!path_copy) return NULL;
 
     char *save_ptr;
-    char *dir = strtok_r(path_copy, ":", &save_ptr); // Split PATH into directories using ":"
-    static char full_path[1024]; // Buffer to store the full path of the command
+    char *dir = strtok_r(path_copy, ":", &save_ptr);
+    static char full_path[1024];  // Persistent buffer for path construction
 
-    while (dir != NULL) {
-        // Construct the full path of the command
+    while (dir) {
         snprintf(full_path, sizeof(full_path), "%s/%s", dir, command);
-        if (is_executable(full_path)) { // Check if the file is executable
-            free(path_copy); // Free the allocated memory
-            return full_path; // Return the full path of the command
+        if (is_executable(full_path)) {
+            free(path_copy);
+            return full_path;
         }
-        dir = strtok_r(NULL, ":", &save_ptr); // Move to the next directory
+        dir = strtok_r(NULL, ":", &save_ptr);
     }
 
-    free(path_copy); // Free the allocated memory
-    return NULL; // Command not found in PATH
+    free(path_copy);
+    return NULL;  // Search failed
 }
 
-// Function to handle the 'type' command
+/* Tell users if a command is built-in or where it's located */
 void handle_type(char *args) {
-    const char *builtins[] = {"echo", "exit", "type", NULL}; // List of built-in commands
+    const char *builtins[] = {"echo", "exit", "type", NULL};
 
-    // Check if the argument matches any built-in command
-    for (int i = 0; builtins[i] != NULL; i++) {
-        if (strcmp(args, builtins[i]) == 0) {
-            printf("%s is a shell builtin\n", args); // Output that it is a built-in command
+    // Check against built-in commands
+    for (int i = 0; builtins[i]; i++) {
+        if (strcmp(args, builtins[i]) == 0) {  // Fixed: proper comparison
+            printf("%s is a shell builtin\n", args);
             return;
         }
     }
 
-    char *path = find_in_path(args); // Search for the command in PATH
+    // Search PATH if not built-in
+    char *path = find_in_path(args);
     if (path) {
-        printf("%s is %s\n", args, path); // Output the full path if found
+        printf("%s is %s\n", args, path);
     } else {
-        printf("%s: not found\n", args); // Output not found message
+        printf("%s: not found\n", args);
     }
 }
 
-// Main function
+/* Our shell's main loop - keeps things running until exit */
 int main() {
-    setbuf(stdout, NULL); // Disable buffering for stdout to ensure immediate output
-    char input[1024]; // Buffer for user input
+    setbuf(stdout, NULL);  // Immediate output for interactive feel
+    char input[1024];
 
     while (1) {
-        printf("$ "); // Display the shell prompt
-        if (fgets(input, sizeof(input), stdin) == NULL) { // Read input from the user
-            continue; // Continue to the next iteration if input is NULL
-        }
+        printf("$ ");
+        if (!fgets(input, sizeof(input), stdin)) continue;
 
-        size_t len = strlen(input);
-        if (len > 0 && input[len - 1] == '\n') {
-            input[len - 1] = '\0'; // Remove the newline character from the input
-        }
+        input[strcspn(input, "\n")] = 0;  // Cleaner newline removal
+        if (!input[0]) continue;  // Skip empty commands
 
-        if (strlen(input) == 0) { // Skip if the input is empty
-            continue;
-        }
-
-        // Split input into arguments
-        char *args[100]; // Array to store arguments
+        // Split command into arguments
+        char *args[100];
         int arg_count = 0;
-        char *token = strtok(input, " "); // Split the input by spaces
-        while (token != NULL && arg_count < 99) {
-            args[arg_count++] = token; // Store each token in the arguments array
-            token = strtok(NULL, " "); // Get the next token
-        }
-        args[arg_count] = NULL; // Null-terminate the arguments array
+        char *token = strtok(input, " ");
 
-        if (arg_count == 0) { // Skip if no arguments were provided
-            continue;
+        while (token && arg_count < 99) {
+            args[arg_count++] = token;
+            token = strtok(NULL, " ");
         }
+        args[arg_count] = NULL;
+
+        if (!arg_count) continue;
 
         // Handle built-in commands
-        if (strcmp(args[0], "echo") == 0) { // If the command is 'echo'
+        if (strcmp(args[0], "echo") == 0) {
             for (int i = 1; i < arg_count; i++) {
-                printf("%s", args[i]); // Print each argument
-                if (i != arg_count - 1) {
-                    printf(" "); // Add a space between arguments
-                }
+                printf("%s%s", args[i], (i == arg_count-1) ? "\n" : " ");
             }
-            printf("\n"); // End with a newline
-        } else if (strcmp(args[0], "type") == 0) { // If the command is 'type'
-            if (arg_count < 2) { // Ensure the command has an argument
+            if (arg_count == 1) printf("\n");  // Handle bare 'echo'
+        }
+        else if (strcmp(args[0], "type") == 0) {
+            if (arg_count < 2) {
                 printf("type: missing argument\n");
             } else {
-                handle_type(args[1]); // Check the type of the given argument
+                handle_type(args[1]);
             }
-        } else if (strcmp(args[0], "exit") == 0) { // If the command is 'exit'
-            if (arg_count >= 2 && strcmp(args[1], "0") == 0) { // Validate the exit argument
-                exit(0); // Exit the shell
+        }
+        else if (strcmp(args[0], "exit") == 0) {
+            if (arg_count >= 2 && strcmp(args[1], "0") == 0) {
+                exit(0);  // Valid exit
             } else {
-                fprintf(stderr, "exit: invalid argument\n"); // Output an error message
+                fprintf(stderr, "exit: invalid argument\n");  // Error message
+                exit(1);
             }
-        } else {
-            // Handle external commands
-            char *path = find_in_path(args[0]); // Search for the command in PATH
-            if (path) {
-                pid_t pid = fork(); // Create a child process
-                if (pid == -1) { // Check for fork errors
-                    perror("fork");
-                } else if (pid == 0) { // In the child process
-                    execv(path, args); // Execute the command
-                    perror("execv"); // Output an error if execv fails
-                    exit(1); // Exit with an error code
-                } else { // In the parent process
-                    int status;
-                    waitpid(pid, &status, 0); // Wait for the child process to complete
-                }
+        }
+        else {
+            // Handle external programs
+            char *path = find_in_path(args[0]);
+            if (!path) {
+                printf("%s: command not found\n", args[0]);
+                continue;
+            }
+
+            pid_t pid = fork();
+            if (pid == -1) {
+                perror("fork");
+            } else if (!pid) {
+                execv(path, args);
+                perror("execv");
+                exit(1);
             } else {
-                printf("%s: command not found\n", args[0]); // Output if the command is not found
+                waitpid(pid, NULL, 0);  // Wait for child completion
             }
         }
     }
