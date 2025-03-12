@@ -36,7 +36,7 @@ char *find_in_path(const char *command) {
 
 /* Tell users if a command is built-in or where it's located */
 void handle_type(char *args) {
-    const char *builtins[] = {"echo", "exit", "type", NULL};
+    const char *builtins[] = {"echo", "exit", "type","pwd", NULL};
 
     // Check against built-in commands
     for (int i = 0; builtins[i]; i++) {
@@ -101,6 +101,11 @@ int main() {
                 fprintf(stderr, "exit: invalid argument\n");  // Error message
                 exit(1);
             }
+        }
+        else if (strcmp(args[0], "pwd") == 0) {
+            char cwd[1024];
+            getcwd(cwd, sizeof(cwd));
+            printf("%s\n", cwd);
         }
         else {
             // Handle external programs
