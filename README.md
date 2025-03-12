@@ -32,6 +32,13 @@ A minimalistic shell implementation in C that supports executing built-in comman
 
 ---
 
+## Screenshot
+
+![Simple Shell in Action](screenshot.png)  
+*Example of the shell running built-in and external commands.*
+
+---
+
 ## How It Works
 
 - Parses user input and splits it into commands and arguments.
@@ -39,3 +46,4 @@ A minimalistic shell implementation in C that supports executing built-in comman
 - Uses `fork`, `execv`, and `waitpid` for process management.
 
 ---
+
