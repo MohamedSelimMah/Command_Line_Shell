@@ -6,7 +6,7 @@ A minimalistic shell implementation in C that supports executing built-in comman
 
 ## Features
 
-- **Built-in Commands**: `echo`, `type`, `exit`.
+- **Built-in Commands**: `echo`, `type`, `exit` , `pwd`.
 - **External Program Execution**: Executes programs from `PATH` with arguments.
 - **POSIX-Compliant**: Works on Unix-like systems (Linux, macOS).
 
