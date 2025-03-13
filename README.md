@@ -1,6 +1,6 @@
 # Simple Shell in C
 
-A minimalistic shell implementation in C that supports executing built-in commands (`echo`, `type`, `exit`) and external programs located via the `PATH` environment variable. This project demonstrates how to create a basic command-line interface (CLI) using POSIX-compliant system calls like `fork`, `execv`, and `waitpid`.
+A minimalistic shell implementation in C that supports executing built-in commands (`echo`, `type`, `exit`, `pwd`) and external programs located via the `PATH` environment variable. This project demonstrates how to create a basic command-line interface (CLI) using POSIX-compliant system calls like `fork`, `execv`, and `waitpid`.
 
 ---
 
