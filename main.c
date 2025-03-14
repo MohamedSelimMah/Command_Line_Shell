@@ -76,7 +76,8 @@ void print_file(char *args){
 //function for the help command
 void help_print(char *command){
     if(command == NULL){
-        printf("Welcome to my shell. This shell was made by mohamed selim mahjoub,coded with  c language\n");
+        printf("\n");
+        printf("Welcome to my shell. This shell was made by mohamed selim mahjoub, coded with  c language\n");
         printf("\n");
         printf("Here are the available built-in commands :\n");
         printf("\n");
@@ -95,6 +96,7 @@ void help_print(char *command){
         printf("cat             - Display the content of a file\n");
         printf("\n");
         printf("Use 'help <command>' for more information about a specific command.\n");
+        printf("\n");
     }
     else{
         if (strcmp(command, "help") == 0) {
