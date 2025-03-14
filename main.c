@@ -36,7 +36,7 @@ char *find_in_path(const char *command) {
 
 /* Tell users if a command is built-in or where it's located */
 void handle_type(char *args) {
-    const char *builtins[] = {"echo", "exit", "type","pwd","cd","cat","clear","help",NULL};
+    const char *builtins[] = {"echo", "exit", "type","pwd","cd","cat","clear","help","cp",NULL};
 
     // Check against built-in commands
     for (int i = 0; builtins[i]; i++) {
