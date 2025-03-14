@@ -36,7 +36,7 @@ char *find_in_path(const char *command) {
 
 /* Tell users if a command is built-in or where it's located */
 void handle_type(char *args) {
-    const char *builtins[] = {"echo", "exit", "type","pwd","cd","cat","clear" ,NULL};
+    const char *builtins[] = {"echo", "exit", "type","pwd","cd","cat","clear","help",NULL};
 
     // Check against built-in commands
     for (int i = 0; builtins[i]; i++) {
@@ -73,6 +73,63 @@ void print_file(char *args){
 }
 
 
+//function for the help command
+void help_print(char *command){
+    if(command == NULL){
+        printf("Welcome to my shell. This shell was made by mohamed selim mahjoub,coded with  c language\n");
+        printf("\n");
+        printf("Here are the available built-in commands :\n");
+        printf("\n");
+        printf("help            - Display this help message\n");
+        printf("\n");
+        printf("echo            - Print arguments to the terminal\n");
+        printf("\n");
+        printf("cd              - Change the current directory\n");
+        printf("\n");
+        printf("clear           - Clear the terminal screen\n");
+        printf("\n");
+        printf("exit 0          - Exit the shell\n");
+        printf("\n");
+        printf("pwd             - Print the current working directory\n");
+        printf("\n");
+        printf("cat             - Display the content of a file\n");
+        printf("\n");
+        printf("Use 'help <command>' for more information about a specific command.\n");
+    }
+    else{
+        if (strcmp(command, "help") == 0) {
+            printf("help: Display information about built-in commands.\n");
+            printf("Usage: help [command]\n");
+        } else if (strcmp(command, "echo") == 0) {
+            printf("echo: Print arguments to the terminal.\n");
+            printf("Usage: echo [arguments]\n");
+        } else if (strcmp(command, "cd") == 0) {
+            printf("cd: Change the current directory.\n");
+            printf("Usage: cd [directory]\n");
+            printf("       cd ~   - Go to the home directory\n");
+        } else if (strcmp(command, "clear") == 0) {
+            printf("clear: Clear the terminal screen.\n");
+            printf("Usage: clear\n");
+        } else if (strcmp(command, "exit") == 0) {
+            printf("exit: Exit the shell.\n");
+            printf("Usage: exit [status]\n");
+            printf("       status - Exit with the specified status (default: 0)\n");
+    }
+       else if (strcmp(command, "type") == 0) {
+            printf("type: Display information about a command.\n");
+            printf("Usage: type <command>\n");
+        } else if (strcmp(command, "pwd") == 0) {
+            printf("pwd: Print the current working directory.\n");
+            printf("Usage: pwd\n");
+        } else if (strcmp(command, "cat") == 0) {
+            printf("cat: Display the contents of a file.\n");
+            printf("Usage: cat <file>\n");
+        } else {
+            printf("help: No help available for '%s'.\n", command);
+        }
+    }
+
+}
 
 
 /* Our shell's main loop - keeps things running until exit */
@@ -152,6 +209,13 @@ int main() {
         else if (strcmp(args[0], "clear")==0){
             printf("\033[H\033[J");
             continue;
+        }else if(strcmp(args[0],"help")==0){
+            if(arg_count <2 ){
+                help_print(NULL);
+            }
+            else{
+                help_print(args[1]);
+            }
         }
         else {
             // Handle external programs
