@@ -36,7 +36,7 @@ char *find_in_path(const char *command) {
 
 /* Tell users if a command is built-in or where it's located */
 void handle_type(char *args) {
-    const char *builtins[] = {"echo", "exit", "type","pwd","cd", NULL};
+    const char *builtins[] = {"echo", "exit", "type","pwd","cd","cat","clear" ,NULL};
 
     // Check against built-in commands
     for (int i = 0; builtins[i]; i++) {
@@ -54,6 +54,26 @@ void handle_type(char *args) {
         printf("%s: not found\n", args);
     }
 }
+
+
+// function for the cat command
+void print_file(char *args){
+    FILE* file = fopen(args,"r");
+    if(file == NULL){
+        printf("unable to open file%s\n",args);
+        return;
+    }
+
+    int x;
+
+    while((x = fgetc(file)) != EOF){
+        putchar(x);
+    }
+    fclose(file);
+}
+
+
+
 
 /* Our shell's main loop - keeps things running until exit */
 int main() {
@@ -118,6 +138,20 @@ int main() {
                 printf("cd : %s: No such  file or directory\n",args[1]);
             }
 
+        }
+        else if (strcmp(args[0], "cat") == 0){
+            if(arg_count < 2 ){
+                printf("cat : missing file \n");
+            }
+            else{
+                for(int i=1 ; i< arg_count; i++){
+                    print_file(args[i]);
+                }
+            }
+        }
+        else if (strcmp(args[0], "clear")==0){
+            printf("\033[H\033[J");
+            continue;
         }
         else {
             // Handle external programs
