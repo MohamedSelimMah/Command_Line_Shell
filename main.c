@@ -80,30 +80,30 @@ int compare_lines(const void *a, const void *b){
     return strcmp(*(const char**)a,*(const char **)b);
 }
 //sort the content
-void sort_file(const char *filename){
+void sort_file(const char *filename) {
     FILE *file = fopen(filename, "r");
-    if(!file){
-        printf("sort: cannot open file '%s' \n", filename);
+    if (!file) {
+        printf("sort: cannot open file '%s'\n", filename);
         return;
     }
 
     char **lines = NULL;
     size_t line_count = 0;
-    size_t capacity = 0;
+    size_t capacity = 10;  // Initial capacity for storing lines
     lines = malloc(capacity * sizeof(char *));
-    if(!lines){
+    if (!lines) {
         printf("sort: memory allocation failed\n");
         fclose(file);
         return;
     }
 
     char buffer[1024];
-    while(fgets(buffer, sizeof(buffer), file)) {
-        if(line_count >= capacity){
+    while (fgets(buffer, sizeof(buffer), file)) {
+        if (line_count >= capacity) {
             capacity *= 2;
             char **new_lines = realloc(lines, capacity * sizeof(char *));
-            if(!new_lines){
-                printf("sort: memory allocation failed \n");
+            if (!new_lines) {
+                printf("sort: memory allocation failed\n");
                 for (size_t i = 0; i < line_count; i++) {
                     free(lines[i]);
                 }
@@ -117,13 +117,15 @@ void sort_file(const char *filename){
     }
     fclose(file);
 
+    // Sort the lines
     qsort(lines, line_count, sizeof(char *), compare_lines);
 
-    for(size_t i=0;i<line_count;i++){
-        printf("%s",lines[i]);
-        free(lines);
+    // Print sorted lines
+    for (size_t i = 0; i < line_count; i++) {
+        printf("%s", lines[i]);
+        free(lines[i]);  // Free each line after printing
     }
-    free(lines);
+    free(lines);  // Free the array of pointers
 }
 
 //function for the help command
