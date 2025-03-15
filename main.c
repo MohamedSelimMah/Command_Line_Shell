@@ -81,7 +81,7 @@ int compare_lines(const void *a, const void *b){
 }
 //sort the content
 void sort_file(const char *filename){
-    File *file = fopen(filename, "r");
+    FILE *file = fopen(filename, "r");
     if(!file){
         printf("sort: cannot open file '%s' \n", filename);
         return;
@@ -89,7 +89,7 @@ void sort_file(const char *filename){
 
     char **lines = NULL;
     size_t line_count = 0;
-    size_t capcitty = 0;
+    size_t capacity = 0;
     lines = malloc(capacity * sizeof(char *));
     if(!lines){
         printf("sort: memory allocation failed\n");
@@ -99,12 +99,12 @@ void sort_file(const char *filename){
 
     char buffer[1024];
     while(fgets(buffer, sizeof(buffer), file)) {
-        if(line_count >= capcitty){
-            capcitty *= 2;
-            char **new_lines = realloc(lines, capcitty * sizeof(char *));
+        if(line_count >= capacity){
+            capacity *= 2;
+            char **new_lines = realloc(lines, capacity * sizeof(char *));
             if(!new_lines){
                 printf("sort: memory allocation failed \n");
-                for(size_t i=0, i<line_count; i++){
+                for (size_t i = 0; i < line_count; i++) {
                     free(lines[i]);
                 }
                 free(lines);
