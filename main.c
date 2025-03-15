@@ -144,7 +144,7 @@ void help_print(char *command){
         printf("\n");
         printf("clear           - Clear the terminal screen\n");
         printf("\n");
-        printf("sort            - Sort lines of text from a file");
+        printf("sort            - Sort lines of text from a file\n");
         printf("\n");
         printf("exit 0          - Exit the shell\n");
         printf("\n");
