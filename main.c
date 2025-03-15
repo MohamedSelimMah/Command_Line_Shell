@@ -36,7 +36,7 @@ char *find_in_path(const char *command) {
 
 /* Tell users if a command is built-in or where it's located */
 void handle_type(char *args) {
-    const char *builtins[] = {"echo", "exit", "type","pwd","cd","cat","clear","help","cp",NULL};
+    const char *builtins[] = {"echo", "exit", "type","pwd","cd","cat","clear","sort",NULL};
 
     // Check against built-in commands
     for (int i = 0; builtins[i]; i++) {
@@ -73,6 +73,59 @@ void print_file(char *args){
 }
 
 
+//function for sorting
+
+//comapre lines
+int compare_lines(const void *a, const void *b){
+    return strcmp(*(const char**)a,*(const char **)b);
+}
+//sort the content
+void sort_file(const char *filename){
+    File *file = fopen(filename, "r");
+    if(!file){
+        printf("sort: cannot open file '%s' \n", filename);
+        return;
+    }
+
+    char **lines = NULL;
+    size_t line_count = 0;
+    size_t capcitty = 0;
+    lines = malloc(capacity * sizeof(char *));
+    if(!lines){
+        printf("sort: memory allocation failed\n");
+        fclose(file);
+        return;
+    }
+
+    char buffer[1024];
+    while(fgets(buffer, sizeof(buffer), file)) {
+        if(line_count >= capcitty){
+            capcitty *= 2;
+            char **new_lines = realloc(lines, capcitty * sizeof(char *));
+            if(!new_lines){
+                printf("sort: memory allocation failed \n");
+                for(size_t i=0, i<line_count; i++){
+                    free(lines[i]);
+                }
+                free(lines);
+                fclose(file);
+                return;
+            }
+            lines = new_lines;
+        }
+        lines[line_count++] = strdup(buffer);
+    }
+    fclose(file);
+
+    qsort(lines, line_count, sizeof(char *), compare_lines);
+
+    for(size_t i=0;i<line_count;i++){
+        printf("%s",lines[i]);
+        free(lines);
+    }
+    free(lines);
+}
+
 //function for the help command
 void help_print(char *command){
     if(command == NULL){
@@ -88,6 +141,8 @@ void help_print(char *command){
         printf("cd              - Change the current directory\n");
         printf("\n");
         printf("clear           - Clear the terminal screen\n");
+        printf("\n");
+        pritnf("sort            - Sort lines of text from a file")
         printf("\n");
         printf("exit 0          - Exit the shell\n");
         printf("\n");
@@ -126,7 +181,10 @@ void help_print(char *command){
         } else if (strcmp(command, "cat") == 0) {
             printf("cat: Display the contents of a file.\n");
             printf("Usage: cat <file>\n");
-        } else {
+        }else if (strcmp(command, "sort") == 0) {
+            printf("sort: Sort lines of text from a file or input.\n");
+            printf("Usage: sort [file]\n");
+        }else {
             printf("help: No help available for '%s'.\n", command);
         }
     }
@@ -217,6 +275,13 @@ int main() {
             }
             else{
                 help_print(args[1]);
+            }
+        }
+        else if(strcmp(args[0], "sort")==0){
+            if(arg_count < 2){
+                printf("sort: missing file\n");
+            }else{
+                sort_file(args[1]);
             }
         }
         else {
