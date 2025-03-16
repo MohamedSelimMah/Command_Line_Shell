@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,7 +37,7 @@ char *find_in_path(const char *command) {
 
 /* Tell users if a command is built-in or where it's located */
 void handle_type(char *args) {
-    const char *builtins[] = {"echo", "exit", "type","pwd","cd","cat","clear","sort",NULL};
+    const char *builtins[] = {"echo", "exit", "type","pwd","cd","cat","clear","sort","head","grep",NULL};
 
     // Check against built-in commands
     for (int i = 0; builtins[i]; i++) {
@@ -127,6 +128,72 @@ void sort_file(const char *filename) {
     }
     free(lines);  // Free the array of pointers
 }
+
+
+//function for the head command
+
+void head(int arg_count, char *args[]) {
+    FILE  *file=fopen(args[1],"r");
+    if (!file) {
+        printf("head: cannot open file'%s' \n",args[1]);
+        return;
+    }
+
+    int lines_to_read = 10;
+    if (arg_count > 3 && strcmp(args[2], "-n") ==0 ) {
+        lines_to_read = atoi(args[3]);
+    }
+
+    char buffer[1024];
+    int count = 0;
+    while (fgets(buffer, sizeof(buffer),file) && count < lines_to_read) {
+        printf("%s", buffer);
+        count++;
+    }
+    fclose(file);
+}
+
+//function for the grep
+
+void grep(const char *pattern, const char *filename, int caseInsensitive, int lineNumber, int invertMatch) {
+    FILE *file = stdin;
+    if (filename && (file = fopen(filename, "r"))== NULL) {
+        printf("grep: cannot open file '%s'\n", filename);
+        return ;
+    }
+    char line[1024];
+    int lineNum =0;
+    while (fgets(line, sizeof(line), file)) {
+        lineNum++;
+        char *matchedline = line;
+
+        if (caseInsensitive) {
+            for (int i=0 ; line[i]; i++) {
+                line[i]=tolower(line[i]);
+            }
+        }
+        if (caseInsensitive) {
+            char *pattern_copy = strdup(pattern);
+            for (int i=0 ; pattern_copy[i]; i++) {
+                pattern_copy[i]=tolower(pattern_copy[i]);
+            }
+            matchedline=strstr(line,pattern_copy);
+            free(pattern_copy);
+        }else {
+            matchedline=strstr(line,pattern);
+        }
+
+        if ((invertMatch && !matchedline) || (!invertMatch && matchedline)) {
+            if (lineNumber) {
+                printf("%d", lineNumber);
+            }
+            printf("%s", matchedline);
+        }
+    }
+    if (file != stdin) fclose(file);
+    return ;
+}
+
 
 //function for the help command
 void help_print(char *command){
@@ -284,6 +351,33 @@ int main() {
                 printf("sort: missing file\n");
             }else{
                 sort_file(args[1]);
+            }
+        }else if(strcmp(args[0], "head")==0) {
+            if (arg_count < 2) {
+                printf("head : missing file\n");
+            }else {
+                head(arg_count,args);
+            }
+        }else if (strcmp(args[0], "grep")==0) {
+            if (arg_count < 2) {
+                printf("grep : missing file\n");
+            }else {
+                const char *pattern = args[1];
+                const char *filename = (arg_count >2)?args[2]: NULL;
+                int caseInsensitive = 0;
+                int lineNumber =0;
+                int invertMatch = 0;
+
+                for (int i = 1; i < arg_count; i++) {
+                    if (strcmp(args[i],"-i")==0) {
+                        caseInsensitive = 1;
+                    }else if (strcmp(args[i],"-n")==0) {
+                        lineNumber = 1;
+                    }else if (strcmp(args[i],"-l")==0) {
+                        invertMatch = 1;
+                    }
+                }
+                grep(pattern,filename,caseInsensitive,lineNumber,invertMatch);
             }
         }
         else {
