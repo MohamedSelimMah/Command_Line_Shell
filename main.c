@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <dirent.h>
 
 /* Check if we can run this file like a proper program */
 int is_executable(const char *path) {
@@ -33,6 +34,59 @@ char *find_in_path(const char *command) {
 
     free(path_copy);
     return NULL;  // Search failed
+}
+
+/* Tab completion function */
+char *tab_complete(const char *prefix) {
+    static char match[1024];
+    DIR *dir;
+    struct dirent *ent;
+    int prefix_len = strlen(prefix);
+    int match_count = 0;
+
+    // Check built-in commands first
+    const char *builtins[] = {"echo", "exit", "type", "pwd", "cd", "cat",
+                             "clear", "sort", "head", "grep", "help", NULL};
+    for (int i = 0; builtins[i]; i++) {
+        if (strncmp(prefix, builtins[i], prefix_len) == 0) {
+            if (match_count == 0) {
+                strcpy(match, builtins[i]);
+            } else {
+                // Find common prefix for multiple matches
+                for (int j = 0; match[j] && builtins[i][j]; j++) {
+                    if (match[j] != builtins[i][j]) {
+                        match[j] = '\0';
+                        break;
+                    }
+                }
+            }
+            match_count++;
+        }
+    }
+
+    // Check files in current directory
+    dir = opendir(".");
+    if (dir) {
+        while ((ent = readdir(dir)) != NULL) {
+            if (strncmp(prefix, ent->d_name, prefix_len) == 0) {
+                if (match_count == 0) {
+                    strcpy(match, ent->d_name);
+                } else {
+                    // Find common prefix
+                    for (int j = 0; match[j] && ent->d_name[j]; j++) {
+                        if (match[j] != ent->d_name[j]) {
+                            match[j] = '\0';
+                            break;
+                        }
+                    }
+                }
+                match_count++;
+            }
+        }
+        closedir(dir);
+    }
+
+    return match_count > 0 ? match : NULL;
 }
 
 /* Tell users if a command is built-in or where it's located */
@@ -305,6 +359,15 @@ int main() {
 
         input[strcspn(input, "\n")] = 0;  // Cleaner newline removal
         if (!input[0]) continue;  // Skip empty commands
+
+        // Handle tab completion
+        if (input[0] == '\t') {
+            char *completion = tab_complete("");
+            if (completion) {
+                printf("\n%s\n", completion);
+            }
+            continue;
+        }
 
         // Split command into arguments
         char *args[100];
