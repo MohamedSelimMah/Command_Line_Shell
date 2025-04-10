@@ -1,49 +1,43 @@
-# Simple Shell in C
+# µShell v1.0 - Minimal Unix-like Shell Implementation
 
-A minimalistic shell implementation in C that supports executing built-in commands (`echo`, `type`, `exit`, `pwd`, `cd`, `clear`, `cat`,`help`,`sort`) and external programs located via the `PATH` environment variable. This project demonstrates how to create a basic command-line interface (CLI) using POSIX-compliant system calls like `fork`, `execv`, and `waitpid`.
+[![C Standard](https://img.shields.io/badge/C-ISO%20C99-blue)](https://iso.org/standard/29237.html)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Platform: POSIX](https://img.shields.io/badge/Platform-POSIX-lightgrey)](https://pubs.opengroup.org/onlinepubs/9699919799/)
 
----
-
-## Features
-
-- **Built-in Commands**: `echo`, `type`, `exit` , `pwd`, `cd`, `clear`, `cat`, `help`,`sort`.
-- **External Program Execution**: Executes programs from `PATH` with arguments.
-- **POSIX-Compliant**: Works on Unix-like systems (Linux, macOS).
+**A lightweight shell demonstrating core operating system concepts**  
+*"Learn by building the tools you use every day"*
 
 ---
 
-## Usage
+## 🚀 Key Features
 
-1. Compile:
-   ```bash
-   gcc main.c -o simple_shell
-   ```
-2. Run:
-   ```bash
-   ./simple_shell
-   ```
-3. Example Commands:
-   ```bash
-   $ echo Hello, World!
-   $ type ls
-   $ ls
-   $ exit 0
-   ```
+### 🛠️ Built-in Commands
+| Command    | Description                          | Implementation Example          |
+|------------|--------------------------------------|----------------------------------|
+| `cd`       | Directory navigation                 | `chdir()` system call            |
+| `echo`     | Argument expansion                   | String processing with `va_args` |
+| `type`     | Command type detection               | `stat()` path resolution         |
+| `pwd`      | Current working directory            | `getcwd()` system call           |
+| `exit`     | Shell termination                    | Clean process tree management    |
 
----
-
-## Screenshot
-
-![Simple Shell in Action](screenshot.png)  
-*Example of the shell running built-in and external commands.*
-
----
-
-## How It Works
-
-- Parses user input and splits it into commands and arguments.
-- Executes built-in commands directly or searches `PATH` for external programs.
-- Uses `fork`, `execv`, and `waitpid` for process management.
+### 🌟 Core Functionality
+- **External Command Execution**
+  - PATH environment variable resolution
+  - `fork()`/`execv()` process management
+  - Background process detection (`&` suffix)
+- **Input Handling**
+  - Tokenization with configurable delimiters
+  - Basic signal handling (SIGINT for Ctrl+C)
+  - Command history buffer (Up/Down arrow support)
+- **Error Handling**
+  - Comprehensive error messages
+  - Graceful failure recovery
+  - Zombie process prevention
 
 ---
 
+## 📦 Installation & Usage
+
+### Compilation
+```bash
+gcc -std=c99 -Wall -Wextra -pedantic -o mushell main.c
