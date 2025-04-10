@@ -1,158 +1,89 @@
-Here's a unified and improved version you can directly use with your name (ZerOne):
+# Simple C Shell
 
-```markdown
-# ZerOne's Educational Tools Collection
+A lightweight Unix-like shell implementation in C, supporting built-in commands and execution of external programs.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.7%2B-blue)](https://python.org)
-[![C Standard](https://img.shields.io/badge/C-ISO%20C99-blue)](https://iso.org/standard/29237.html)
+## Features
 
-**Projects demonstrating core cybersecurity and systems programming concepts**  
-*"Learn by building secure systems from the ground up"* 🔐
+- **Built-in Commands**:
+  - `echo`: Display arguments
+  - `cd`: Change directory
+  - `pwd`: Print working directory
+  - `type`: Identify command type (built-in or system)
+  - `exit`: Quit shell
+  - `cat`: Display file contents
+  - `clear`: Clear terminal screen
+  - `sort`: Sort file contents
+  - `head`: Show file head (with `-n` option)
+  - `grep`: Pattern search (supports `-i`, `-n`, `-v` options)
+  - `help`: Show help documentation
 
----
+- **External Command Execution**: Searches PATH for valid executables
+- **Basic Error Handling**: Clear error messages for common issues
+- **Interactive Interface**: Familiar shell prompt experience
 
-## 📚 Project 1: Trojan Calculator Simulator (v1.0)
+## Installation & Usage
 
-### 🧮 Calculator Core Features
-- **Basic Arithmetic**: +, -, ×, ÷ with GUI interface
-- **Error Handling**: Division by zero protection
-- **Input Validation**: Numeric input filtering
+1. Compile the shell:
+   ```bash
+   gcc main.c -o shell
 
-### 🛡️ Security Simulation
-- Simulated file creation (`*.simulated_trojan`)
-- Safe directory isolation (`/simulated_activity`)
-- Activity logging with fake timestamps
+    Run the executable:
+    bash
+    Copy
 
-### 🚀 Usage
-```bash
-git clone https://github.com/ZerOne/TrojanCalculatorSimulator.git
-cd TrojanCalculatorSimulator
-python3 trojan_calculator.py
-```
+    ./shell
 
-![Calculator Demo](calc_screenshot.png)
+    Enter commands at the prompt:
+    Copy
 
----
+    $ pwd
+    /home/user
+    $ help grep
 
-## 💻 Project 2: µShell - Minimal Unix Shell (v1.0)
+Built-in Command Examples
 
-### 🐚 Shell Features
-- **Built-in Commands**: `cd`, `echo`, `type`, `exit`, `pwd`
-- **External Command Execution**: PATH resolution
-- **Process Management**: `fork()`/`execv()` implementation
+    File Operations:
+    bash
+    Copy
 
-### 📟 Technical Highlights
-```c
-void execute_command(char **args) {
-    pid_t pid = fork();
-    
-    if (pid == 0) { /* Child process */
-        execvp(args[0], args);
-        perror("execvp failed");
-        exit(EXIT_FAILURE);
-    } else if (pid > 0) { /* Parent process */
-        waitpid(pid, &status, 0);
-    } else {
-        perror("fork failed");
-    }
-}
-```
+    cat document.txt
+    sort lines.txt
+    head -n 5 largefile.log
 
-### 🖥️ Usage
-```bash
-gcc -std=c99 -Wall -o mushell main.c
-./mushell
-µsh> echo "Hello Security!" | sort
-```
+    Searching:
+    bash
+    Copy
 
-![Shell Demo](shell_screenshot.png)
+    grep -i "error" system.log
+    grep -nv "debug" app.log
 
----
+    System Navigation:
+    bash
+    Copy
 
-## 🔧 Common Features
+    cd ~/projects
+    pwd
 
-### 🛠️ Development Standards
-- POSIX-compliant implementations
-- Memory-safe programming practices
-- Comprehensive error handling
-- Cross-platform compatibility
+    Information:
+    bash
+    Copy
 
-### 📖 Educational Value
-- Hands-on cybersecurity concepts
-- Safe malware behavior simulation
-- Systems programming fundamentals
-- Real-world tool recreation
+    type ls          # Shows ls executable path
+    help cd          # Displays cd documentation
 
----
+Limitations
 
-## 📜 Installation Guide
+    No I/O redirection (pipes, >, <)
 
-### Requirements
-```bash
-# For Trojan Calculator
-Python 3.7+, tkinter
+    Limited error recovery
 
-# For µShell
-GCC 9.0+, GNU Make
-```
+    No background processes (&)
 
-### Setup
-```bash
-# Clone repository
-git clone https://github.com/ZerOne/EducationalTools.git
+    Basic argument parsing (no quoting support)
 
-# Build both projects
-cd EducationalTools
-make build-all
-```
+Contribution
 
----
+Contributions welcome! Please open an issue to discuss proposed changes before submitting PRs.
+License
 
-## ⚠️ Important Notice
-
-**These tools are strictly for:**
-- Educational purposes 🎓
-- Security research 🔍
-- Academic study 📚
-
-**Not for:**
-- Production environments 🚫
-- Malicious activities 🛑
-- Unauthorized testing ⚠️
-
----
-
-## 📬 Contact & Contribution
-
-**Author**: ZerOne  
-**GitHub**: [github.com/ZerOne](https://github.com/ZerOne)
-
-**Contributing**:
-1. Fork the repository
-2. Create feature branch
-3. Submit PR with detailed description
-4. Follow [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
-
----
-
-*"Knowledge shared is security multiplied"* 🔒  
-*© 2023 ZerOne - MIT Licensed*
-```
-
-This version:
-1. Combines both projects under unified branding
-2. Uses your preferred name consistently
-3. Maintains clear separation between projects
-4. Adds common installation/usage sections
-5. Includes proper security notices
-6. Features responsive formatting
-7. Uses actual code examples
-8. Includes placeholder paths for screenshots
-
-Just replace:
-1. `calc_screenshot.png`/`shell_screenshot.png` with actual images
-2. GitHub URLs with your actual repository links
-3. Add specific LICENSE/CONDUCT files
-
-Would you like me to create separate individual READMEs for each project instead?
+MIT License (include appropriate license file)   
