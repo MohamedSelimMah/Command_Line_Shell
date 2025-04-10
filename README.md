@@ -39,5 +39,78 @@
 ## 📦 Installation & Usage
 
 ### Compilation
-```bash
-gcc -std=c99 -Wall -Wextra -pedantic -o mushell main.c
+   ```bash
+   gcc main.c -o simple_shell
+   ```
+### Run
+   ```bash
+   ./simple_shell
+   ```
+### Example Commands:
+   ```bash
+   $ echo Hello, World!
+   $ type ls
+   $ ls
+   $ exit 0
+   ```
+
+📚 Learning Resources
+Core Concepts Demonstrated
+
+    Process creation/management (fork, exec, waitpid)
+
+    Environment variable manipulation
+
+    File descriptor management
+
+    Signal handling fundamentals
+
+    Memory management best practices
+
+Recommended Reading
+
+    Advanced Programming in the UNIX Environment
+
+    Linux System Programming
+
+    POSIX.1-2017 Specification
+
+🛠️ Development Roadmap
+v1.1 Planned Features
+
+    I/O Redirection (>, <, >>)
+
+    Pipeline support (|)
+
+    Background job control (jobs, fg, bg)
+
+    Tab-completion
+
+    Configuration file support
+
+⚠️ Safety Notice
+
+This is an educational tool - not a production-grade shell!
+
+    No permission management
+
+    Limited error recovery
+
+    Basic security features
+
+    Always test in contained environments
+
+🤝 Contribution Guidelines
+
+    Fork the repository
+
+    Create feature branch (git checkout -b feature/amazing-feature)
+
+    Commit changes (git commit -m 'Add amazing feature')
+
+    Push branch (git push origin feature/amazing-feature)
+
+    Open Pull Request
+
+µShell v1.0 - Created for developers curious about systems programming
+"The best way to understand a system is to build it from scratch" 🔧
