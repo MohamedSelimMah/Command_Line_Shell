@@ -1,7 +1,5 @@
-# 🐚 Simple C Shell
-
-A lightweight Unix-like shell implementation in C, supporting built-in commands and execution of external programs. Perfect for learning shell fundamentals! 🧠
-
+# 🐚 Simple C Shell 
+A lightweight Unix-like shell implementation in C, supporting built-in commands and execution of external programs. Perfect for learning shell fundamentals! 🧠 
 ## 🚀 Features
 
 ### 🛠️ Built-in Commands
