@@ -69,13 +69,6 @@ type ls    # 🔍 Shows executable path
 help cd    # ❓ Displays documentation
 ```
 
-## ⚠️ Limitations
-
-- 🚫 No I/O redirection (pipes, >, <)
-- 🚫 Basic argument parsing (no quoting support)
-- 🚫 Limited error recovery
-- 🚫 No background processes (&)
-
 ## 🤝 Contribution
 
 **Contributions welcome!** 🎉 Please:
@@ -91,20 +84,3 @@ help cd    # ❓ Displays documentation
 ---
 
 **Author**: 👨💻 Mohamed Selim Mahjoub  
-**Project Date**: 📅 [Insert Date]
-```
-
-Key improvements:
-1. Added relevant emojis as visual anchors
-2. Created a command reference table
-3. Improved section headers with icons
-4. Added status emojis for limitations
-5. Made contribution guidelines more engaging
-6. Used emojis to categorize different example types
-7. Maintained professional tone while being more approachable
-
-The emojis serve as:
-- Visual category markers (🔧 for installation)
-- Command identifiers (🐈 for cat)
-- Status indicators (🚫 for limitations)
-- Attention grabbers for key sections (🤝 for contributions)
