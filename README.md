@@ -1,49 +1,107 @@
-# Simple Shell in C
+# 🐚 Simple C Shell v1.5
 
-A minimalistic shell implementation in C that supports executing built-in commands (`echo`, `type`, `exit`, `pwd`, `cd`, `clear`, `cat`,`help`,`sort`) and external programs located via the `PATH` environment variable. This project demonstrates how to create a basic command-line interface (CLI) using POSIX-compliant system calls like `fork`, `execv`, and `waitpid`.
-
----
-
-## Features
-
-- **Built-in Commands**: `echo`, `type`, `exit` , `pwd`, `cd`, `clear`, `cat`, `help`,`sort`.
-- **External Program Execution**: Executes programs from `PATH` with arguments.
-- **POSIX-Compliant**: Works on Unix-like systems (Linux, macOS).
+A lightweight Unix-like shell implementation in C, supporting built-in commands and execution of external programs. Perfect for learning shell fundamentals! 🧠
 
 ---
 
-## Usage
+## 🚀 Features
 
-1. Compile:
-   ```bash
-   gcc main.c -o simple_shell
-   ```
-2. Run:
-   ```bash
-   ./simple_shell
-   ```
-3. Example Commands:
-   ```bash
-   $ echo Hello, World!
-   $ type ls
-   $ ls
-   $ exit 0
-   ```
+### 🛠️ Built-in Commands
+| Command  | Emoji | Description                  |
+|----------|-------|------------------------------|
+| `echo`   | 📢   | Display arguments            |
+| `cd`     | 📂   | Change directory             |
+| `pwd`    | 🗺️   | Print working directory      |
+| `type`   | 🔍   | Identify command type        |
+| `exit`   | 🚪   | Quit shell                   |
+| `cat`    | 🐈   | Display file contents        |
+| `clear`  | 🧹   | Clear terminal screen        |
+| `sort`   | 🔢   | Sort file contents           |
+| `head`   | 👆   | Show file head               |
+| `grep`   | 🔎   | Pattern search               |
+| `rm`     | 🗑️   | Remove files or directories  |
+| `mv`     | 🔀   | Move or rename files         |
+| `cp`     | 📄   | Copy files or directories    |
+| `mkdir`  | 📁   | Create directories           |
+| `help`   | ❓   | Show help documentation      |
 
----
-
-## Screenshot
-
-![Simple Shell in Action](screenshot.png)  
-*Example of the shell running built-in and external commands.*
-
----
-
-## How It Works
-
-- Parses user input and splits it into commands and arguments.
-- Executes built-in commands directly or searches `PATH` for external programs.
-- Uses `fork`, `execv`, and `waitpid` for process management.
+- 🌐 **External Command Execution**: Searches `PATH` for valid executables
+- 🛡️ **Error Handling**: Clear error messages for common issues
+- 💻 **Interactive Interface**: Familiar shell prompt experience
 
 ---
 
+## 📦 Installation & Usage
+
+### Compile the Shell 🔧
+```bash
+gcc main.c -o shell
+```
+
+### Run the Executable 🚀
+```bash
+./shell
+```
+
+### Start Exploring 🔭
+```bash
+$ pwd
+/home/user
+$ help grep
+```
+
+---
+
+## 📚 Examples
+
+### 📂 File Operations
+```bash
+cat document.txt          # 🐈 Display file
+sort lines.txt            # 🔢 Sort content
+head -n 5 log.txt         # 👆 Show first 5 lines
+rm file.txt               # 🗑️ Remove a file
+rm -r folder              # 🗑️ Remove a directory
+mv file1 file2            # 🔀 Rename or move a file
+cp source.txt dest.txt    # 📄 Copy a file
+mkdir new_folder          # 📁 Create a new directory
+```
+
+### 🔍 Searching
+```bash
+grep -i "error" system.log   # 🔎 Case-insensitive search
+grep -nv "debug" app.log     # 🔍 Inverted match with line numbers
+```
+
+### 🧭 Navigation
+```bash
+cd ~/projects  # 📂 Change directory
+pwd            # 🗺️ Show current path
+```
+
+### ℹ️ Information
+```bash
+type ls    # 🔍 Shows executable path
+help cd    # ❓ Displays documentation
+```
+
+---
+
+## 🤝 Contribution
+
+Contributions welcome! 🎉 Please:
+
+1. 🐛 Open an issue to discuss changes
+2. 🌱 Fork the repository
+3. ✨ Create a feature branch
+4. 📝 Submit a PR with a detailed description
+
+---
+
+## 📜 License
+
+MIT License © 2023 Mohamed Selim Mahjoub
+
+---
+
+### Author
+👨💻 **Mohamed Selim Mahjoub**

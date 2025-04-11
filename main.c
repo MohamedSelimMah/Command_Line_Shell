@@ -4,6 +4,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
+#include <errno.h>
 
 /* Check if we can run this file like a proper program */
 int is_executable(const char *path) {
@@ -37,7 +39,7 @@ char *find_in_path(const char *command) {
 
 /* Tell users if a command is built-in or where it's located */
 void handle_type(char *args) {
-    const char *builtins[] = {"echo", "exit", "type", "pwd", "cd", "cat", "clear", "sort", "head", "grep", NULL};
+    const char *builtins[] = {"echo", "exit", "type", "pwd", "cd", "cat", "clear", "sort", "head", "grep","cp","rm","mv","mkdir",NULL};
 
     // Check against built-in commands
     for (int i = 0; builtins[i]; i++) {
@@ -227,11 +229,57 @@ void grep(const char *pattern, const char *filename, int caseInsensitive, int li
     }
 }
 
+// all file management commands
+
+void copy_file(const char *src, const char *dest) {
+    FILE *file =fopen(src, "r");
+    if (!file) {
+        printf("cp: cannot open file '%s'\n",src);
+        return;
+    }
+
+    FILE *dest_file =fopen(dest,"w");
+    if (!dest_file) {
+        printf("cp: cannot write to file '%s'\n",dest);
+        fclose(file);
+        return;
+    }
+
+    char buffer[1024];
+    size_t bytes;
+    while ((bytes =fread(buffer,1,sizeof(buffer),file))>0) {
+        fwrite(buffer,1,bytes,dest_file);
+    }
+    fclose(file);
+    fclose(dest_file);
+}
+
+void remove_file(const char *filename) {
+    if (unlink(filename)) {
+        printf("rm: cannot remove file '%s'\n", filename);
+    }
+}
+
+void move_file(const char *src,const char *dest) {
+    if (rename(src, dest)) {
+        printf("mv: cannot move file '%s' to '%s'\n",src,dest);
+    }
+}
+
+void make_dir(const char *dir) {
+    if (mkdir(dir, 0777)) {
+        printf("mkdir: cannot create directory '%s'\n", dir);
+    }
+}
+
+
+
+
 // Function for the help command
 void help_print(char *command) {
     if (command == NULL) {
         printf("\n");
-        printf("Welcome to my shell. This shell was made by Mohamed Selim Mahjoub, coded with C language.\n");
+        printf("Welcome to my shell, Version 1.5. This shell was made by Mohamed Selim Mahjoub, coded in C language.\n");
         printf("\n");
         printf("Here are the available built-in commands:\n");
         printf("\n");
@@ -240,11 +288,15 @@ void help_print(char *command) {
         printf("cd              - Change the current directory\n");
         printf("clear           - Clear the terminal screen\n");
         printf("sort            - Sort lines of text from a file\n");
-        printf("exit 0          - Exit the shell\n");
+        printf("exit            - Exit the shell\n");
         printf("pwd             - Print the current working directory\n");
         printf("cat             - Display the content of a file\n");
         printf("head            - Display the first few lines of a file\n");
         printf("grep            - Search for a pattern in a file\n");
+        printf("mv              - Move or rename files and directories\n");
+        printf("cp              - Copy files and directories\n");
+        printf("mkdir           - Create new directories\n");
+        printf("rm              - Remove files or directories\n");
         printf("\n");
         printf("Use 'help <command>' for more information about a specific command.\n");
         printf("\n");
@@ -266,9 +318,6 @@ void help_print(char *command) {
             printf("exit: Exit the shell.\n");
             printf("Usage: exit [status]\n");
             printf("       status - Exit with the specified status (default: 0)\n");
-        } else if (strcmp(command, "type") == 0) {
-            printf("type: Display information about a command.\n");
-            printf("Usage: type <command>\n");
         } else if (strcmp(command, "pwd") == 0) {
             printf("pwd: Print the current working directory.\n");
             printf("Usage: pwd\n");
@@ -288,11 +337,27 @@ void help_print(char *command) {
             printf("       -i       - Ignore case distinctions\n");
             printf("       -n       - Print line numbers\n");
             printf("       -v       - Invert match\n");
+        } else if (strcmp(command, "mv") == 0) {
+            printf("mv: Move or rename files and directories.\n");
+            printf("Usage: mv <source> <destination>\n");
+            printf("       mv <file1> <file2> ... <dir> - Move multiple files to a directory\n");
+        } else if (strcmp(command, "cp") == 0) {
+            printf("cp: Copy files and directories.\n");
+            printf("Usage: cp <source> <destination>\n");
+            printf("       cp -r <dir> <destination> - Copy directories recursively\n");
+        } else if (strcmp(command, "mkdir") == 0) {
+            printf("mkdir: Create new directories.\n");
+            printf("Usage: mkdir <directory>\n");
+        } else if (strcmp(command, "rm") == 0) {
+            printf("rm: Remove files or directories.\n");
+            printf("Usage: rm <file>\n");
+            printf("       rm -r <directory> - Remove directories recursively\n");
         } else {
             printf("help: No help available for '%s'.\n", command);
         }
     }
 }
+
 
 /* Our shell's main loop - keeps things running until exit */
 int main() {
@@ -421,7 +486,31 @@ int main() {
 
                 grep(pattern, filename, caseInsensitive, lineNumber, invertMatch);
             }
-        } else {
+        }else if (strcmp(args[0], "cp")==0){
+            if (arg_count < 3) {
+                printf("cp: missing pattern\n");
+            }else {
+                copy_file(args[1],args[2]);
+            }
+        }else if (strcmp(args[0], "rm")==0) {
+            if (arg_count <2) {
+                printf("rm: missing pattern\n");
+            }
+            remove_file(args[1]);
+        }else if (strcmp(args[0], "mv")== 0) {
+            if (arg_count <3) {
+                printf("mv: missing pattern\n");
+            }else {
+                move_file(args[1],args[2]);
+            }
+        }else if (strcmp(args[0], "mkdir")==0) {
+            if (arg_count <2) {
+                printf("mkdir: missing pattern\n");
+            }else {
+                make_dir(args[1]);
+            }
+        }
+        else {
             // Handle external programs
             char *path = find_in_path(args[0]);
             if (!path) {
