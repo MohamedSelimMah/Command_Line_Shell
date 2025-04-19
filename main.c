@@ -6,8 +6,8 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <dirent.h>
 
-/* Check if we can run this file like a proper program */
 int is_executable(const char *path) {
     return access(path, X_OK) == 0;
 }
@@ -39,7 +39,7 @@ char *find_in_path(const char *command) {
 
 /* Tell users if a command is built-in or where it's located */
 void handle_type(char *args) {
-    const char *builtins[] = {"echo", "exit", "type", "pwd", "cd", "cat", "clear", "sort", "head", "grep","cp","rm","mv","mkdir",NULL};
+    const char *builtins[] = {"echo", "exit", "type", "pwd", "cd", "cat", "clear", "sort", "head", "grep","cp","rm","mv","mkdir","ps",NULL};
 
     // Check against built-in commands
     for (int i = 0; builtins[i]; i++) {
@@ -75,7 +75,7 @@ void print_file(char *args) {
 
 // Function for sorting
 
-// Compare lines
+
 int compare_lines(const void *a, const void *b) {
     return strcmp(*(const char **)a, *(const char **)b);
 }
@@ -273,6 +273,60 @@ void make_dir(const char *dir) {
 }
 
 
+//system monitoring
+
+void ps_command() {
+    DIR *proc = opendir("/proc");
+    struct dirent *entry;
+
+    printf("PID\tCMD\n");
+    while ((entry = readdir(proc)) != NULL) {
+        if (entry->d_type == DT_DIR && isdigit(entry->d_name[0])) {
+            char path[256];
+            snprintf(path, sizeof(path), "/proc/%.240s/comm", entry->d_name);
+
+            FILE *cmd_file = fopen(path, "r");
+            if (cmd_file) {
+                char cmd[256];
+                if (fgets(cmd, sizeof(cmd), cmd_file)) {
+                    cmd[strcspn(cmd, "\n")] = '\0'; // remove newline
+                    printf("%s\t%s\n", entry->d_name, cmd);
+                }
+                fclose(cmd_file);
+            }
+        }
+    }
+    closedir(proc);
+}
+
+void df_command() {
+    FILE *fp = popen("df -h", "r");
+    if (!fp) {
+        printf("df: command failed\n");
+        return;
+    }
+
+    char buffer[1024];
+    while (fgets(buffer, sizeof(buffer), fp)) {
+        printf("%s", buffer);
+    }
+    pclose(fp);
+}
+
+void top_command() {
+    FILE *fp = popen("top -b -n 1 | head -20", "r");
+    if (!fp) {
+        printf("top: command failed\n");
+        return;
+    }
+
+    char buffer[1024];
+    while (fgets(buffer, sizeof(buffer), fp)) {
+        printf("%s", buffer);
+    }
+    pclose(fp);
+}
+
 
 
 // Function for the help command
@@ -359,9 +413,8 @@ void help_print(char *command) {
 }
 
 
-/* Our shell's main loop - keeps things running until exit */
 int main() {
-    setbuf(stdout, NULL);  // Immediate output for interactive feel
+    setbuf(stdout, NULL);
     char input[1024];
 
     while (1) {
@@ -508,6 +561,27 @@ int main() {
                 printf("mkdir: missing pattern\n");
             }else {
                 make_dir(args[1]);
+            }
+        }else if (strcmp(args[0], "ps")==0) {
+            if (arg_count <2) {
+                printf("ps: missing pattern\n");
+            }
+            else {
+                ps_command();
+            }
+        }else if (strcmp(args[0], "df")==0) {
+            if (arg_count <2) {
+                printf("df: missing pattern\n");
+            }
+            else {
+                df_command(args[1]);
+            }
+        }else if (strcmp(args[0], "top")==0) {
+            if (arg_count <2) {
+                printf("top: missing pattern\n");
+            }
+            else {
+                top_command(args[1]);
             }
         }
         else {
