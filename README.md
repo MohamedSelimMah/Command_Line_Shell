@@ -1,4 +1,4 @@
-# 🐚 Simple C Shell v1.5
+# 🐚 Simple C Shell v2.0
 
 A lightweight Unix-like shell implementation in C, supporting built-in commands and execution of external programs. Perfect for learning shell fundamentals! 🧠
 
@@ -24,9 +24,12 @@ A lightweight Unix-like shell implementation in C, supporting built-in commands 
 | `cp`     | 📄   | Copy files or directories    |
 | `mkdir`  | 📁   | Create directories           |
 | `help`   | ❓   | Show help documentation      |
+| `ps`     | 📊   | Show process status          |
+| `df`     | 💽   | Show disk usage              |
+| `top`    | 📈   | Show real-time system stats  |
 
-- 🌐 **External Command Execution**: Searches `PATH` for valid executables
-- 🛡️ **Error Handling**: Clear error messages for common issues
+- 🌐 **External Command Execution**: Searches `PATH` for valid executables  
+- 🛡️ **Error Handling**: Clear error messages for common issues  
 - 💻 **Interactive Interface**: Familiar shell prompt experience
 
 ---
@@ -84,16 +87,32 @@ type ls    # 🔍 Shows executable path
 help cd    # ❓ Displays documentation
 ```
 
+### 📊 System Monitoring
+```bash
+ps               # 📊 Show current shell processes
+ps -e            # 📊 Show all processes
+ps -u root       # 📊 Show processes by user
+ps aux           # 📊 BSD-style output of all processes
+
+df               # 💽 Show filesystem usage
+df -h            # 💽 Human-readable sizes
+df -T            # 💽 Show filesystem types
+
+top              # 📈 Real-time CPU/memory usage
+top -u username  # 📈 Filter by user
+top -n 1         # 📈 Run for 1 iteration
+```
+
 ---
 
 ## 🤝 Contribution
 
 Contributions welcome! 🎉 Please:
 
-1. 🐛 Open an issue to discuss changes
-2. 🌱 Fork the repository
-3. ✨ Create a feature branch
-4. 📝 Submit a PR with a detailed description
+1. 🐛 Open an issue to discuss changes  
+2. 🌱 Fork the repository  
+3. ✨ Create a feature branch  
+4. 📝 Submit a PR with a detailed description  
 
 ---
 
