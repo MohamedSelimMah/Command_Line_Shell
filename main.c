@@ -39,7 +39,7 @@ char *find_in_path(const char *command) {
 
 /* Tell users if a command is built-in or where it's located */
 void handle_type(char *args) {
-    const char *builtins[] = {"echo", "exit", "type", "pwd", "cd", "cat", "clear", "sort", "head", "grep","cp","rm","mv","mkdir","ps",NULL};
+    const char *builtins[] = {"echo", "exit", "type", "pwd", "cd", "cat", "clear", "sort", "head", "grep","cp","rm","mv","mkdir","ps","df","top",NULL};
 
     // Check against built-in commands
     for (int i = 0; builtins[i]; i++) {
@@ -351,6 +351,9 @@ void help_print(char *command) {
         printf("cp              - Copy files and directories\n");
         printf("mkdir           - Create new directories\n");
         printf("rm              - Remove files or directories\n");
+        printf("top             - Display real-time process activity\n");
+        printf("df              - Report file system disk space usage\n");
+        printf("ps              - Display currently running processes\n");  
         printf("\n");
         printf("Use 'help <command>' for more information about a specific command.\n");
         printf("\n");
@@ -406,7 +409,29 @@ void help_print(char *command) {
             printf("rm: Remove files or directories.\n");
             printf("Usage: rm <file>\n");
             printf("       rm -r <directory> - Remove directories recursively\n");
-        } else {
+        }else if (strcmp(command, "ps") == 0) {
+            printf("ps: Display information about active processes.\n");
+            printf("Usage: ps [OPTION]...\n");
+            printf("       ps              - List processes for the current shell\n");
+            printf("       ps -e           - Show all processes\n");
+            printf("       ps -f           - Full-format listing\n");
+            printf("       ps -u [USER]    - Show processes for the specified user\n");
+            printf("       ps aux          - Show all running processes in BSD format\n");
+        }else if (strcmp(command, "df") == 0) {
+            printf("df: Report file system disk space usage.\n");
+            printf("Usage: df [OPTION]... [FILE]...\n");
+            printf("       df              - Show disk usage of all mounted filesystems\n");
+            printf("       df -h           - Human-readable sizes (e.g., 1K, 234M, 2G)\n");
+            printf("       df -T           - Show filesystem type\n");
+            printf("       df -a           - Include pseudo, duplicate, and inaccessible file systems\n");
+        }else if (strcmp(command, "top") == 0) {
+                printf("top: Display Linux tasks and system resource usage in real time.\n");
+                printf("Usage: top [OPTION]...\n");
+                printf("       top             - Launch task manager view\n");
+                printf("       top -u [USER]   - Show processes for a specific user\n");
+                printf("       top -n [COUNT]  - Exit after [COUNT] updates\n");
+                printf("       top -b          - Batch mode for logging or scripting\n");
+            }else {
             printf("help: No help available for '%s'.\n", command);
         }
     }
