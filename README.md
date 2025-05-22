@@ -1,4 +1,4 @@
-# 🐚 Simple C Shell v2.0
+# 🐚 Simple C Shell v2.0 
 
 A lightweight Unix-like shell implementation in C, supporting built-in commands and execution of external programs. Perfect for learning shell fundamentals! 🧠
 
